@@ -1,0 +1,67 @@
+### **Step 1: What is TanStack Query?**  
+
+TanStack Query (formerly React Query) is a powerful data-fetching and state management library that helps you handle API requests efficiently. It provides **caching, background synchronization, pagination, and more**, making data management easier in Angular applications.  
+
+---
+
+### **Why Use TanStack Query in Angular?**  
+Angular already has **HttpClient** for API calls, but it **does not handle caching, retries, background updates, or automatic state management**. TanStack Query does all of this with minimal code.  
+
+#### **Advantages of TanStack Query in Angular:**
+1. **Automatic Caching** 🗄️  
+   - Stores fetched data and reuses it, reducing API calls.
+   
+2. **Automatic Background Updates** 🔄  
+   - Refetches data in the background to keep UI fresh.
+   
+3. **Retry on Failure** 🔄  
+   - Automatically retries failed requests with exponential backoff.
+   
+4. **Easy Pagination & Infinite Scrolling** 📜  
+   - Helps with paginated API requests.
+   
+5. **Optimistic Updates** ⚡  
+   - Makes UI feel faster by updating UI before API response.
+
+---
+
+### **Installing TanStack Query in Angular**
+Let's set up TanStack Query in your Angular project.
+
+#### **Step 1: Install Dependencies**  
+Run the following command in your Angular project:  
+```sh
+npm install @tanstack/angular-query
+```
+
+#### **Step 2: Import `QueryClientModule` in `app.module.ts`**
+```ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
+import { QueryClient, QueryClientModule, QueryClientService } from '@tanstack/angular-query';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    QueryClientModule
+  ],
+  providers: [
+    {
+      provide: QueryClientService,
+      useFactory: () => new QueryClient(),
+    },
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+✅ Now, TanStack Query is set up in your Angular app!  
+
+---
+
+### **Next Step: Fetching Data with TanStack Query**
+In the next lesson, we’ll **fetch data from a JSON API** using TanStack Query. Are you ready to move forward? 🚀
