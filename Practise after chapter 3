@@ -1,0 +1,34 @@
+Great! Here are some **practice questions** based on what we've covered so far:  
+
+### **📌 Basic Concepts of TanStack Query**
+1. What is TanStack Query, and why is it useful in Angular applications?  
+2. How does TanStack Query handle **caching, retries, and background updates**?  
+3. Compare `HttpClient` and TanStack Query for data fetching in Angular.  
+
+### **📌 Setup and Installation**
+4. What package do we install to use TanStack Query in Angular 19?  
+5. How do we provide **QueryClient** in an Angular 19 application?  
+
+### **📌 Fetching Data**
+6. Why do we use `firstValueFrom()` instead of `.toPromise()` in Angular 19?  
+7. How do we fetch API data using TanStack Query inside an Angular **service**?  
+8. Explain how `fetchQuery()` works in TanStack Query.  
+
+### **📌 Component Integration**
+9. How do you inject a service inside a **Standalone Component** in Angular 19?  
+10. How do you handle **loading and error states** while fetching data in an Angular component?  
+
+---
+### **💡 Bonus Challenge**
+- Implement a new API fetch using **TanStack Query** to get a list of **Star Wars characters** from this API:  
+  ```
+  https://swapi.dev/api/people/
+  ```
+- Display the **name** of each character in a component.  
+
+---
+
+### **Next Steps: Mutations (POST, PUT, DELETE)**
+Next, we'll learn how to **mutate data** (create, update, and delete API data) using TanStack Query.  
+
+Once you’ve completed these questions, let me know, and we’ll move forward! 🚀
