@@ -1,0 +1,33 @@
+We'll go step by step, covering everything from the basics to advanced use cases. Here's the roadmap I'll follow:
+
+### **Step 1: Understanding the Basics**
+- What is TanStack Query?
+- Why use it in Angular?
+- Installing TanStack Query in an Angular project
+
+### **Step 2: Fetching Data**
+- Using `useQuery` in Angular
+- Handling loading, error, and success states
+- Caching and automatic refetching
+
+### **Step 3: Mutating Data**
+- Using `useMutation` for POST, PUT, DELETE requests
+- Handling optimistic updates
+- Error handling and rollback strategies
+
+### **Step 4: Advanced Query Features**
+- Query invalidation and refetching
+- Pagination and infinite scrolling
+- Dependent queries (chained API calls)
+
+### **Step 5: Optimizing Performance**
+- Prefetching data
+- Background updates
+- Query retries and exponential backoff
+
+### **Step 6: Real-World Project**
+- Integrating TanStack Query with JSON Server
+- Building a complete Angular app with caching, optimistic updates, and pagination
+- Best practices and debugging
+
+I'll explain concepts with examples and code snippets. Do you want to start with **what TanStack Query is and why you should use it in Angular?** 🚀
