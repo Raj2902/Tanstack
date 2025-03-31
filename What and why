@@ -29,39 +29,68 @@ Angular already has **HttpClient** for API calls, but it **does not handle cachi
 Let's set up TanStack Query in your Angular project.
 
 #### **Step 1: Install Dependencies**  
-Run the following command in your Angular project:  
-```sh
-npm install @tanstack/angular-query
+Run the following command in your Angular project:
+npm install @tanstack/query-core
+
+#### **Step 2: Import `QueryClientModule` in `app.config.ts`**
+
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { QueryClient } from '@tanstack/query-core';
+import { provideHttpClient } from '@angular/common/http';
+
+const queryClient = new QueryClient();
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideHttpClient(), { provide: QueryClient, useValue: queryClient }, provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)]
+};
+
 ```
+Step 3: Create a Service to Fetch Data
+Since Angular uses services for API calls, we integrate TanStack Query inside a service.
 
-#### **Step 2: Import `QueryClientModule` in `app.module.ts`**
-```ts
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
-import { QueryClient, QueryClientModule, QueryClientService } from '@tanstack/angular-query';
+Generate the Service
+Run this command to create a new service:
 
-@NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    QueryClientModule
-  ],
-  providers: [
-    {
-      provide: QueryClientService,
-      useFactory: () => new QueryClient(),
-    },
-  ],
-  bootstrap: [AppComponent]
+ng generate service services/pokemon
+
+Now, open src/app/services/pokemon.service.ts and update it:
+
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { QueryClient } from '@tanstack/query-core';
+
+@Injectable({
+  providedIn: 'root',
 })
-export class AppModule {}
-```
+export class PokemonService {
+  private http = inject(HttpClient);
+  private queryClient = inject(QueryClient);
+  private apiUrl = 'https://pokeapi.co/api/v2/pokemon?limit=10';
+
+  fetchPokemons() {
+    return this.queryClient.fetchQuery({
+      queryKey: ['pokemons'],
+      queryFn: () => this.http.get(this.apiUrl).toPromise(),
+    });
+  }
+}
+
+✅ Breakdown of what we did:
+
+Injected HttpClient to make API requests.
+
+Injected QueryClient for caching and data fetching.
+
+Created fetchPokemons() to fetch Pokémon data using TanStack Query.
+
+
+
 ✅ Now, TanStack Query is set up in your Angular app!  
 
 ---
 
-### **Next Step: Fetching Data with TanStack Query**
-In the next lesson, we’ll **fetch data from a JSON API** using TanStack Query. Are you ready to move forward? 🚀
+Next Step: Fetch and Display Data in a Component
+Now that we have the service, in the next lesson, we'll fetch data in a component and display it in the UI using Angular 19's Standalone API. Ready to move forward? 🚀
