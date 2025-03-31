@@ -1,0 +1,119 @@
+### **Step 4: Fetch and Display Data in an Angular 19 Component**  
+
+Now that our **PokemonService** is ready, let's use it inside a component to fetch and display data.
+
+---
+
+### **Step 1: Create a Pokémon List Component**  
+Run this command to generate a new standalone component:  
+```sh
+ng generate component components/pokemon-list --standalone
+```
+This will create `pokemon-list.component.ts`, `pokemon-list.component.html`, and `pokemon-list.component.css`.
+
+---
+
+### **Step 2: Fetch Data in the Component**
+Open `src/app/components/pokemon-list/pokemon-list.component.ts` and update it:
+
+```ts
+import { Component, inject, OnInit } from '@angular/core';
+import { PokemonService } from '../../services/pokemon.service';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-pokemon-list',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './pokemon-list.component.html',
+  styleUrls: ['./pokemon-list.component.css'],
+})
+export class PokemonListComponent implements OnInit {
+  private pokemonService = inject(PokemonService);
+  pokemons: any[] = [];
+  isLoading = true;
+  error: string | null = null;
+
+  ngOnInit() {
+    this.fetchPokemons();
+  }
+
+  async fetchPokemons() {
+    try {
+      const data: any = await this.pokemonService.fetchPokemons();
+      this.pokemons = data.results; // API returns { results: [...] }
+    } catch (err) {
+      this.error = 'Failed to load Pokémon data';
+    } finally {
+      this.isLoading = false;
+    }
+  }
+}
+```
+
+✅ **What This Does:**
+- **Injects `PokemonService`** to fetch Pokémon data.  
+- **Uses `ngOnInit()`** to call `fetchPokemons()` when the component loads.  
+- **Handles loading, success, and error states.**
+
+---
+
+### **Step 3: Display Data in HTML**
+Now, open `src/app/components/pokemon-list/pokemon-list.component.html` and update it:
+
+```html
+<h2>Pokémon List</h2>
+
+<div *ngIf="isLoading">Loading...</div>
+<div *ngIf="error">{{ error }}</div>
+
+<ul *ngIf="pokemons.length">
+  <li *ngFor="let pokemon of pokemons">
+    {{ pokemon.name }}
+  </li>
+</ul>
+```
+
+✅ **What This Does:**
+- Shows **"Loading..."** when fetching data.
+- Displays an **error message** if the request fails.
+- Renders a **list of Pokémon names** when data is available.
+
+---
+
+### **Step 4: Use the Component in `AppComponent`**
+Next, open `src/app/app.component.ts` and modify it:
+
+```ts
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { PokemonListComponent } from './components/pokemon-list/pokemon-list.component';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet,PokemonListComponent],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {
+  title = 'ang-tanstack';
+}
+Finally open `src/app/app.component.html` and modify it:
+<app-pokemon-list></app-pokemon-list>
+```
+
+✅ This ensures that our `PokemonListComponent` is displayed when the app runs.
+
+---
+
+### **Run the Application**
+Now, start your Angular app with:
+```sh
+ng serve
+```
+🚀 You should see a list of Pokémon names on the screen!  
+
+---
+
+### **Next Step: Mutations (POST, PUT, DELETE)**
+Now that we have data fetching working, let's move to **data mutations** (adding, updating, and deleting data using TanStack Query). Are you ready to proceed? 🚀
