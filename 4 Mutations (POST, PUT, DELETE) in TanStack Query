@@ -1,0 +1,68 @@
+Now that we can fetch data, let's learn how to mutate data using TanStack Query in Angular.
+
+Mutations allow us to:
+✅ POST (Create new data)
+✅ PUT/PATCH (Update existing data)
+✅ DELETE (Remove data)
+
+generate a post service using the below command :
+ ng g s services/posts/post
+
+Step 1: Modify PostService
+
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import {injectQuery} from '@tanstack/angular-query-experimental';
+import { firstValueFrom } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PostService {
+
+  httpClient = inject(HttpClient);
+
+  constructor() { }
+
+  getPosts(){
+    return injectQuery(()=>({
+      queryKey: ['posts'],
+      queryFn: () => firstValueFrom(this.httpClient.get('https://jsonplaceholder.typicode.com/posts')),
+    }));
+  }
+
+}
+
+###why we use injectQuery instead of normal fetchQuery - becuase injectQuery from @tanstack/angular-query-experimental provides us with many other featues such as automatic error, loading and data handling,
+along wiht catching.
+
+Step 2 : Update the Post Component
+
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PostService } from '../services/post.service';
+
+@Component({
+  selector: 'app-posts',
+  imports: [CommonModule],
+  templateUrl: './posts.component.html',
+  styleUrl: './posts.component.css'
+})
+export class PostsComponent {
+  
+  postSrv = inject(PostService);
+  posts:any = this.postSrv.getPosts();
+
+}
+
+Step 3 : Update the post html
+
+@if(posts.isPending()){
+<p>Loading...</p>
+} @if(posts.error()){
+<p>{{ posts.error()?.message }}</p>
+} @if(posts.data();as data){
+<ul>
+  <li *ngFor="let post of data">{{ post.title }}</li>
+</ul>
+}
