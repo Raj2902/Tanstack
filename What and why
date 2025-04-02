@@ -49,43 +49,56 @@ export const appConfig: ApplicationConfig = {
 
 
 ```
+
+Note : We will using JSON server to setup one follow the steps below :
+1)create a file names db.json in your root directory of the project and paste the below code.
+{
+    "posts": [
+      { "id": 1, "title": "Angular with TanStack Query", "body": "Learn how to use TanStack Query in Angular" },
+      { "id": 2, "title": "RxJS Observables", "body": "Understanding reactive programming with RxJS" }
+    ]
+}
+2)run this line in the terminal to start your json server.
+json-server --watch db.json --port 3000
+
 Step 3: Create a Service to Fetch Data
-Since Angular uses services for API calls, we integrate TanStack Query inside a service.
 
 Generate the Service
 Run this command to create a new service:
 
-ng generate service services/pokemon
+ng generate service services/post
 
-Now, open src/app/services/pokemon.service.ts and update it:
+Now, open src/app/services/post.service.ts and update it:
 
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class PokemonService {
-  private http = inject(HttpClient);
-  private apiUrl = 'https://pokeapi.co/api/v2/pokemon?limit=10';
+export class PostService {
 
-  pokemons() {
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:3000/posts';
+
+  constructor() { }
+
+  posts(){
     return lastValueFrom(this.http.get(this.apiUrl));
   }
-}
 
 ✅ Breakdown of what we did:
 
 Injected HttpClient to make API requests.
 
-Created fetchPokemons() to fetch Pokémon data using TanStack Query.
+Created posts() to fetch posts data.
 
 Used lastValueFrom() from RxJS to convert the Observable to a Promise.
 
 
 
-✅ Now, TanStack Query is set up in your Angular app!  
+✅ Now, api call is set up in your Angular app!  
 
 ---
 
