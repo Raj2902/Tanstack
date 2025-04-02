@@ -29,23 +29,24 @@ Angular already has **HttpClient** for API calls, but it **does not handle cachi
 Let's set up TanStack Query in your Angular project.
 
 #### **Step 1: Install Dependencies**  
-Run the following command in your Angular project:
-npm install @tanstack/query-core
+Run the following command in your Angular project (inside the newly created angular add after using the command ng new <app-name>):
+npm i @tanstack/angular-query-experimental
 
-#### **Step 2: Import `QueryClientModule` in `app.config.ts`**
+#### **Step 2: Import `provideTanStackQuery` in `app.config.ts`**
 
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { QueryClient } from '@tanstack/query-core';
+import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { provideHttpClient } from '@angular/common/http';
 
 const queryClient = new QueryClient();
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideHttpClient(), { provide: QueryClient, useValue: queryClient }, provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)]
+  providers: [provideHttpClient(),provideTanStackQuery(queryClient),provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)]
 };
+
 
 ```
 Step 3: Create a Service to Fetch Data
@@ -60,22 +61,17 @@ Now, open src/app/services/pokemon.service.ts and update it:
 
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { QueryClient } from '@tanstack/query-core';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PokemonService {
   private http = inject(HttpClient);
-  private queryClient = inject(QueryClient);
   private apiUrl = 'https://pokeapi.co/api/v2/pokemon?limit=10';
 
-  fetchPokemons() {
-    return this.queryClient.fetchQuery({
-      queryKey: ['pokemons'],
-      queryFn: async () => firstValueFrom(this.http.get(this.apiUrl)), // Convert Observable to Promise
-    });
+  pokemons() {
+    return lastValueFrom(this.http.get(this.apiUrl));
   }
 }
 
@@ -83,11 +79,9 @@ export class PokemonService {
 
 Injected HttpClient to make API requests.
 
-Injected QueryClient for caching and data fetching.
-
 Created fetchPokemons() to fetch Pokémon data using TanStack Query.
 
-Used firstValueFrom() from RxJS to convert the Observable to a Promise.
+Used lastValueFrom() from RxJS to convert the Observable to a Promise.
 
 
 
