@@ -1,6 +1,27 @@
 1) What is background synchronization and how to implement it in angular using tanstack query?
+Ans : It is automatically handled by tanstack query it refers to the data getting updtaed on the ui if the api response data changes else use the cache data with it.
+
 2)When use fetchQuery and when use injectQuery, whats the diffrence??
 Ans : fetchQuery is use to fetch data from api but we need to manually handle data, loading and error.
 injectQuery : Also use for fetch data from api but handles data, loading and error automatically.
+We can use another field with injectQuery enable and achive the same result with automatic handling of loading and error.
+
 3)Is using fetchQuery for single data call in dynamic routing is the right thing to do or not??
+Ans :  No its the wrong way we always use injectQuery to fetch the data even if its for single data, what you need to do is use inject query but with one more field
+as enable : false this will not make the inject query run when the component load we will need to manually refresh it.
+suppose:
+singleQuery = injectQuery(() => ({
+    queryKey: ['post', this.search],
+    queryFn: () => this.postSrv.getPost(this.search),
+    enabled: false
+  }));
+inside any function :
+this.singleQuery.refetch()
+
 4)Where to use tanstack query in the services or in the component.ts offical docs used them inside component.ts while project used it inside services??
+Ans : we use injectQuery and fetchQuery in the component.ts file though we never use fetchQuery we can achive the same using injectQuery, we apply the query options
+inside the service.ts file.
+
+5)In optimic update what if i the ui gets upated before the api response and user edit the optimistic updated data?
+Ans : As we know the optimistic data are rollback data that after api response may change therfore, we need the stop the user from editing the data
+before the api response like using disable with button and enable when we get the api response.
