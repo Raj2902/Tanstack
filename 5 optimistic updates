@@ -1,0 +1,32 @@
+Now we are done with the crud apart in the tanstack query.
+
+Let see optimistic updates now.
+
+Update your deletePost function in app.component.ts file
+````````````````````````````````````````````````
+deletePost = injectMutation(() => ({
+    mutationFn: (id: any) => this.postSrv.deletePost('1'),
+    onMutate: async (id: any) => {
+      await this.queryClient.cancelQueries({ queryKey: ['posts'] });
+      const prevData = this.queryClient.getQueryData(['posts']);
+
+      this.queryClient.setQueryData(['posts'], (oldPosts: any) => {
+        return oldPosts ? oldPosts.filter((post: any) => post.id != '1') : [];
+      });
+
+      return { prevData };
+    },
+    onError: (err, id, content) => {
+      this.queryClient.setQueryData(['posts'], content?.prevData);
+    },
+    onSettled: () => {
+      this.queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+  }));
+
+ ``````````````````````````
+What we did?
+In this the ui updates as the data deleted but incase of error the orignal data from the database will be rolledback.
+if there is no error we will not see any changesc.
+This updates the instantly.
+We use onSettled to get fresh data from the database and it runs irrespective of the api failure or success.
