@@ -4,65 +4,149 @@ Mutations allow us to:
 ✅ POST (Create new data)
 ✅ PUT/PATCH (Update existing data)
 ✅ DELETE (Remove data)
+✅ GET (Single data)
 
-generate a post service using the below command :
- ng g s services/posts/post
+Open the Post Service ts file created in prev chapter
 
 Step 1: Modify PostService
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import {injectQuery} from '@tanstack/angular-query-experimental';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PostService {
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:3000/posts';
 
-  httpClient = inject(HttpClient);
+  constructor() {}
 
-  constructor() { }
-
-  getPosts(){
-    return injectQuery(()=>({
-      queryKey: ['posts'],
-      queryFn: () => firstValueFrom(this.httpClient.get('https://jsonplaceholder.typicode.com/posts')),
-    }));
+  createPost(post: any) {
+    return lastValueFrom(this.http.post(this.apiUrl, post));
   }
 
+  posts() {
+    return lastValueFrom(this.http.get(this.apiUrl));
+  }
+
+  updatePost(post: any, id: string) {
+    return lastValueFrom(this.http.put(`${this.apiUrl}/${id}`, post));
+  }
+
+  deletePost(id: string) {
+    return lastValueFrom(this.http.delete(`${this.apiUrl}/${id}`));
+  }
+  getPost(id: string) {
+    return lastValueFrom(this.http.get(`${this.apiUrl}/${id}`));
+  }
 }
 
-###why we use injectQuery instead of normal fetchQuery - becuase injectQuery from @tanstack/angular-query-experimental provides us with many other featues such as automatic error, loading and data handling,
-along wiht catching.
 
-Step 2 : Update the Post Component
+Step 2 : Update the app Component ts
 
 import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import {
+  injectMutation,
+  injectQuery,
+  QueryClient,
+} from '@tanstack/angular-query-experimental';
+import { PostService } from './services/post.service';
 import { CommonModule } from '@angular/common';
-import { PostService } from '../services/post.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-posts',
-  imports: [CommonModule],
-  templateUrl: './posts.component.html',
-  styleUrl: './posts.component.css'
+  selector: 'app-root',
+  imports: [RouterOutlet, CommonModule, FormsModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
 })
-export class PostsComponent {
-  
+export class AppComponent {
+  title = 'ang-tanstack';
+  loading = false;
+  post: any = null;
+  search: string = '';
+
   postSrv = inject(PostService);
-  posts:any = this.postSrv.getPosts();
+  queryClient = inject(QueryClient);
 
+  query = injectQuery(() => ({
+    queryKey: ['posts'],
+    queryFn: () => this.postSrv.posts(),
+  }));
+
+  mutation = injectMutation(() => ({
+    mutationFn: (post: any) => this.postSrv.createPost(post),
+    onSuccess: () =>
+      this.queryClient.invalidateQueries({ queryKey: ['posts'] }),
+  }));
+
+  updatePost = injectMutation(() => ({
+    mutationFn: (post: any) => this.postSrv.updatePost(post, '1'),
+    onSuccess: () =>
+      this.queryClient.invalidateQueries({ queryKey: ['posts'] }),
+  }));
+
+  deletePost = injectMutation(() => ({
+    mutationFn: (post: any) => this.postSrv.deletePost('1'),
+    onSuccess: () =>
+      this.queryClient.invalidateQueries({ queryKey: ['posts'] }),
+  }));
+
+  createPost() {
+    this.mutation.mutate({ title: 'new post', body: 'content of new post' });
+  }
+
+  updateMutation() {
+    this.updatePost.mutate({ title: 'new post', body: 'content of new post' });
+  }
+
+  deleteMutation() {
+    this.deletePost.mutate(1);
+  }
+
+  async getQuery() {
+    if (this.search) {
+      try {
+        this.loading = true;
+        this.post = await this.queryClient.fetchQuery({
+          queryKey: ['posts', this.search],
+          queryFn: () => this.postSrv.getPost(this.search),
+        });
+      } catch (err) {
+        console.log(err);
+        this.post = null;
+      } finally {
+        this.loading = false;
+      }
+    } else {
+      this.post = null;
+    }
+  }
 }
 
-Step 3 : Update the post html
 
-@if(posts.isPending()){
-<p>Loading...</p>
-} @if(posts.error()){
-<p>{{ posts.error()?.message }}</p>
-} @if(posts.data();as data){
-<ul>
-  <li *ngFor="let post of data">{{ post.title }}</li>
-</ul>
-}
+Step 3 : Update the app component html
+
+<h2>Posts data</h2>
+
+<p *ngIf="query.isPending()">Loading...</p>
+<p *ngIf="query.error()">{{ query.error()?.message }}</p>
+
+<input
+  type="text"
+  placeholder="search by id"
+  [(ngModel)]="search"
+  (change)="getQuery()"
+/>
+<p>Searched result</p>
+<p *ngIf="loading">Loading...</p>
+<pre *ngIf="post">{{ post | json }}</pre>
+
+<button (click)="deleteMutation()">Delete</button>
+<button (click)="updateMutation()">Update</button>
+<button (click)="createPost()">Create</button>
+<pre *ngIf="query.data() as data">{{ data | json }}</pre>
+
