@@ -47,7 +47,6 @@ export class PostService {
 Step 2 : Update the app Component ts
 
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import {
   injectMutation,
   injectQuery,
@@ -59,14 +58,12 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent {
   title = 'ang-tanstack';
-  loading = false;
-  post: any = null;
   search: string = '';
 
   postSrv = inject(PostService);
@@ -75,6 +72,13 @@ export class AppComponent {
   query = injectQuery(() => ({
     queryKey: ['posts'],
     queryFn: () => this.postSrv.posts(),
+  }));
+
+  singleQuery = injectQuery(() => ({
+    queryKey: ['post', this.search],
+    queryFn: () => this.postSrv.getPost(this.search),
+    enabled: false,
+    retry: 0,
   }));
 
   mutation = injectMutation(() => ({
@@ -107,25 +111,11 @@ export class AppComponent {
     this.deletePost.mutate(1);
   }
 
-  async getQuery() {
-    if (this.search) {
-      try {
-        this.loading = true;
-        this.post = await this.queryClient.fetchQuery({
-          queryKey: ['posts', this.search],
-          queryFn: () => this.postSrv.getPost(this.search),
-        });
-      } catch (err) {
-        console.log(err);
-        this.post = null;
-      } finally {
-        this.loading = false;
-      }
-    } else {
-      this.post = null;
-    }
+  getQuery() {
+    this.singleQuery.refetch();
   }
 }
+
 
 
 Step 3 : Update the app component html
@@ -142,8 +132,12 @@ Step 3 : Update the app component html
   (change)="getQuery()"
 />
 <p>Searched result</p>
-<p *ngIf="loading">Loading...</p>
-<pre *ngIf="post">{{ post | json }}</pre>
+<p *ngIf="singleQuery.isFetching()">Loading...</p>
+<p *ngIf="singleQuery.error()">{{ singleQuery.error()?.message }}</p>
+
+<pre *ngIf="!singleQuery.error() && singleQuery.data() as data">{{
+  data | json
+}}</pre>
 
 <button (click)="deleteMutation()">Delete</button>
 <button (click)="updateMutation()">Update</button>
