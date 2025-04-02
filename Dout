@@ -1,1 +1,4 @@
 1) What is background synchronization and how to implement it in angular using tanstack query?
+2)When use fetchQuery and when use injectQuery, whats the diffrence??
+Ans : fetchQuery is use to fetch data from api but we need to manually handle data, loading and error.
+injectQuery : Also use for fetch data from api but handles data, loading and error automatically.
