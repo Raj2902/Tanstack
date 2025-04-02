@@ -25,3 +25,6 @@ inside the service.ts file.
 5)In optimic update what if i the ui gets upated before the api response and user edit the optimistic updated data?
 Ans : As we know the optimistic data are rollback data that after api response may change therfore, we need the stop the user from editing the data
 before the api response like using disable with button and enable when we get the api response.
+
+6)How to disable retires in tanstack?
+Ans: To disable retries of data fetch using injectQuery use one more field retry 0 this will not hit the api again and again.
