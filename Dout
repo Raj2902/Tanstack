@@ -28,3 +28,7 @@ before the api response like using disable with button and enable when we get th
 
 6)How to disable retires in tanstack?
 Ans: To disable retries of data fetch using injectQuery use one more field retry 0 this will not hit the api again and again.
+
+7)Using onsettled instead of onSucces in injectQuery?
+Ans : When we use onMutate to optimistically update our data we use onSettled to get fresh data on failure as well as success.
+onSuccess works only for success and not for failure.
