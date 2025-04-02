@@ -6,12 +6,12 @@ We'll go step by step, covering everything from the basics to advanced use cases
 - Installing TanStack Query in an Angular project
 
 ### **Step 2: Fetching Data**
-- Using `useQuery` in Angular
+- Using `fetchQuery` and `injectQuery` in Angular
 - Handling loading, error, and success states
 - Caching and automatic refetching
 
 ### **Step 3: Mutating Data**
-- Using `useMutation` for POST, PUT, DELETE requests
+- Using `injectMutation` for POST, PUT, DELETE requests
 - Handling optimistic updates
 - Error handling and rollback strategies
 
