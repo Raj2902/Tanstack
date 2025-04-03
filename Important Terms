@@ -1,0 +1,9 @@
+1)retry.
+2)Zonless
+3)retryDelay
+4)refetchOnMount
+5)refetchOnWindowFocus
+6)refetchOnReconnect 
+7)refetchInterval.
+8)Structural sharing
+9)fetchStatus
