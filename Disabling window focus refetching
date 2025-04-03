@@ -28,3 +28,14 @@ injectQuery(() => ({
   queryFn: fetchTodos,
   refetchOnWindowFocus: false,
 }))
+
+``````````````````````````````````````````````````
+Managing focus state
+
+import { focusManager } from '@tanstack/angular-query-experimental'
+
+// Override the default focus state
+focusManager.setFocused(true)
+
+// Fallback to the default focus check
+focusManager.setFocused(undefined)
