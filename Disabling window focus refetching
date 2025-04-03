@@ -1,0 +1,30 @@
+Window Focus Refetching
+If a user leaves your application and returns and the query data is stale, TanStack Query automatically requests fresh data for you in the background. You can disable this globally or per-query using the refetchOnWindowFocus option:
+
+``````````````````````````````````````````````````
+
+Disabling Globally
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideTanStackQuery(
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false, // default: true
+          },
+        },
+      }),
+    ),
+  ],
+}
+
+```````````````````````````````````````````````````
+
+Disabling Per-Query
+
+injectQuery(() => ({
+  queryKey: ['todos'],
+  queryFn: fetchTodos,
+  refetchOnWindowFocus: false,
+}))
