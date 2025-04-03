@@ -51,3 +51,12 @@ What select Does:
 *In this case, data.toString() converts the number 5 into the string "5".
 
 11) Zoneless in signals in angular 19?
+
+12)How to add stale time to your injectQueries?
+Ans: class MyComponent {
+  query = injectQuery(() => ({
+    queryKey: ['product', id], // Dynamic query key
+    queryFn: () => fetchProductById(id), // API function
+    staleTime: 5 * 60 * 1000, // 5 minutes (in milliseconds)
+  }));
+}
