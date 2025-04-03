@@ -49,3 +49,5 @@ What select Does:
 *The queryFn resolves with 5 (a number).
 *The select function takes the fetched data (5) and transforms it.
 *In this case, data.toString() converts the number 5 into the string "5".
+
+11) Zoneless in signals in angular 19?
