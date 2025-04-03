@@ -27,3 +27,36 @@ provideTanStackQuery(
   new QueryClient(),
   withDevtools(() => ({ loadDevtools: false })),
 )
+
+````````````````````````````````````````````````````````````````````
+We can add the devTools as laziy loaded and with dynamic values to using signals in angular
+In this case we have down it on keypress
+
+@Injectable({ providedIn: 'root' })
+class DevtoolsOptionsManager {
+  loadDevtools = toSignal(
+    fromEvent<KeyboardEvent>(document, 'keydown').pipe(
+      map(
+        (event): boolean =>
+          event.metaKey && event.ctrlKey && event.shiftKey && event.key === 'D',
+      ),
+      scan((acc, curr) => acc || curr, false),
+    ),
+    {
+      initialValue: false,
+    },
+  )
+}
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideHttpClient(),
+    provideTanStackQuery(
+      new QueryClient(),
+      withDevtools(() => ({
+        initialIsOpen: true,
+        loadDevtools: inject(DevtoolsOptionsManager).loadDevtools(),
+      })),
+    ),
+  ],
+}
