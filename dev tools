@@ -1,0 +1,29 @@
+
+The devtools help you debug and inspect your queries and mutations. You can enable the devtools by adding withDevtools to provideTanStackQuery.
+
+If you need more control over when devtools are loaded, you can use the loadDevtools option.
+
+When not setting the option or setting it to 'auto', the devtools will be loaded when Angular is in development mode.
+
+provideTanStackQuery(new QueryClient(), withDevtools())
+
+// which is equivalent to
+provideTanStackQuery(
+  new QueryClient(),
+  withDevtools(() => ({ loadDevtools: 'auto' })),
+)
+
+````````````````````````````````````````````````````````
+When setting the option to true, the devtools will be loaded in both development and production mode.
+
+provideTanStackQuery(
+  new QueryClient(),
+  withDevtools(() => ({ loadDevtools: true })),
+)
+
+When setting the option to false, the devtools will not be loaded.
+
+provideTanStackQuery(
+  new QueryClient(),
+  withDevtools(() => ({ loadDevtools: false })),
+)
