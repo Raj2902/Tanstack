@@ -1,0 +1,20 @@
+Dependent Queries
+injectQuery dependent Query
+Dependent (or serial) queries depend on previous ones to finish before they can execute. To achieve this, it's as easy as using the enabled option to tell a query when it is ready to run:
+
+// Get the user
+userQuery = injectQuery(() => ({
+  queryKey: ['user', email],
+  queryFn: getUserByEmail,
+}))
+
+// Then get the user's projects
+projectsQuery = injectQuery(() => ({
+  queryKey: ['projects', this.userQuery.data()?.id],
+  queryFn: getProjectsByUser,
+  // The query will not execute until the user id exists
+  enabled: !!this.userQuery.data()?.id,
+}))
+
+Practise question :
+1) Fetch product list from an api using injectQueries and using the productId gets its avalibity using another dependent Query?
