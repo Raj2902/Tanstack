@@ -35,3 +35,17 @@ onSuccess works only for success and not for failure.
 
 8) What is client side rendering and server side rendering, how to implment them in an angular application?
 9)What are zonless application, explain with respect to angular?
+
+10)class MyComponent {
+  query = injectQuery(() => ({
+    queryKey: ['test'],
+    queryFn: () => Promise.resolve(5),
+    select: (data) => data.toString(),
+  }))
+}
+what does select do in this case??
+Ans : In your injectQuery function, the select option is used to transform or derive a specific value from the fetched data before it is returned to the component.
+What select Does:
+*The queryFn resolves with 5 (a number).
+*The select function takes the fetched data (5) and transforms it.
+*In this case, data.toString() converts the number 5 into the string "5".
