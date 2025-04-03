@@ -17,6 +17,7 @@ Great! Here are some **practice questions** based on what we've covered so far:
 ### **📌 Component Integration**
 9. How do you inject a service inside a **Standalone Component** in Angular 19?  
 10. How do you handle **loading and error states** while fetching data in an Angular component?  
+11) Make a dynamic route for product detail and cache its value, handle update of that single post and invalidateQueries to show new data once it updates.
 
 ---
 ### **💡 Bonus Challenge**
